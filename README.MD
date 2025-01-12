@@ -607,8 +607,33 @@ Used to establish many-to-many relationships between entities.
 ### Task Description: Extending the Cinema Application
 
 In this assignment, you are tasked with continuing the development of the cinema application. 
-The `schemas/movies.py` and `routes/movies.py` files have already been provided as examples of implementation and do not require any changes. Your objective is to implement the required functionality by filling out the `schemas/accounts.py` and `routes/accounts.py` files. 
+The `schemas/movies.py` and `routes/movies.py` files have already been provided as examples of implementation and do not require any changes. Your objective is to implement the required functionality by filling out the `schemas/accounts.py` and `routes/accounts.py` files.
 
+These files will handle user-related operations, such as registration, authentication, and account management, while adhering to the structure and design demonstrated in the existing movie-related files.
+
+#### Additional Notes and Considerations:
+
+1. **SQLite and Timezone Handling**:
+   - SQLite does not have built-in support for time zones. To ensure compatibility with SQLite during testing, especially for fields like `expires_at` in tokens, you need to manually adjust the timezone.
+   - Example:
+     ```python
+     expires_at = cast(datetime, token_record.expires_at).replace(tzinfo=timezone.utc)
+     ```
+   - This ensures that the datetime object is timezone-aware and allows proper comparisons during tests.
+
+2. **Mapped Annotations and `cast`**:
+   - SQLAlchemy's `Mapped` type hint can sometimes cause IDE warnings or issues when accessing certain attributes. To avoid these, use Python's `cast` function to explicitly cast the value.
+   - Example:
+     ```python
+     reset_token = PasswordResetTokenModel(user_id=cast(int, user.id))
+     ```
+   - This approach helps resolve type-related issues, ensuring compatibility with IDEs and type-checking tools like MyPy.
+
+3. **Adhering to Test Requirements**:
+   - Tests have been pre-written for the application, which means your implementation must align with their expected behavior. Make sure to review and follow the test scenarios carefully.
+   - Handle edge cases, such as invalid tokens, expired tokens, and unregistered users, to ensure all tests pass successfully.
+
+By following these guidelines and addressing the nuances of SQLite and `Mapped` annotations, your implementation will integrate seamlessly into the existing application and meet the expected functionality.
 These files will handle user-related operations, such as registration, authentication, and account management, while adhering to the structure and design demonstrated in the existing movie-related files.
 
 ### Task: Implement User Registration Endpoint
